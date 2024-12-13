@@ -194,7 +194,7 @@ Please note:
 Local development or CI/CD features :
 
 - [ ] Add end-to-end test cases.
-- [ ] Automatically Register a model in mlflow instead of having to manually modify model.yaml file
+- [X] Automatically Register a model in mlflow instead of having to manually modify model.yaml file
 - [ ] Finalize test containers for CI
 
 Cloud development features :
