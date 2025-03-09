@@ -24,12 +24,10 @@ jobs:
         password: ${{ secrets.GHCR_PAT }}
 
     - name: Build and push Docker image
-      id: docker_build
-      uses: docker/build-push-action@v2
-      with:
-        context: ./streamlit_app
-        push: true
-        tags: ghcr.io/${{ github.repository }}/streamlit-app:${{ github.sha::0:7 }}
+      run: |
+        COMMIT_HASH=$(echo ${{ github.sha }} | cut -c1-7)
+        docker build -t ghcr.io/${{ github.repository }}/streamlit-app:$COMMIT_HASH ./streamlit_app
+        docker push ghcr.io/${{ github.repository }}/streamlit-app:$COMMIT_HASH
 
     - name: Install yq
       run: |
@@ -38,8 +36,8 @@ jobs:
 
     - name: Update kustomization.yaml with new image tag
       run: |
-        SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
-        yq e '.images[] |= select(.name == "streamlit-app").newTag = env(SHORT_SHA)' -i k8s/prod/kustomization.yaml
+        COMMIT_HASH=$(echo ${{ github.sha }} | cut -c1-7)
+        yq e '.images[] |= select(.name == "streamlit-app").newTag = env(COMMIT_HASH)' -i k8s/prod/kustomization.yaml
 
     - name: Commit and push changes
       run: |
