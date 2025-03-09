@@ -26,7 +26,7 @@ jobs:
     - name: Build and push Docker image
       run: |
         COMMIT_HASH=$(echo ${{ github.sha }} | cut -c1-7)
-        docker build -t ghcr.io/${{ github.repository }}/fastapi-app:$COMMIT_HASH ./fastapi_app
+        docker build -t ghcr.io/${{ github.repository }}/fastapi-app:$COMMIT_HASH ./src/fastapi_app
         docker push ghcr.io/${{ github.repository }}/fastapi-app:$COMMIT_HASH
 
     - name: Install yq

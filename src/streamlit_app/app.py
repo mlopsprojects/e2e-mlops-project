@@ -4,7 +4,7 @@ import requests
 # FastAPI backend URL (update the host if necessary)
 FASTAPI_URL = "http://fastapi:8000/data"  # Use service name in Kubernetes
 
-st.title("Streamlit + FastAPI App v1.0.3")
+st.title("Streamlit + FastAPI App v1.0.4")
 
 st.write("Fetching data from FastAPI...")
 
