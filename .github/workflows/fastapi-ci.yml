@@ -1,0 +1,49 @@
+name: Build and Publish FastAPI App
+
+on:
+  push:
+    paths:
+      - 'src/fastapi_app/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GHCR_PAT }}
+
+    - name: Build and push Docker image
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        context: ./fastapi_app
+        push: true
+        tags: ghcr.io/${{ github.repository }}/fastapi-app:${{ github.sha::7 }}
+
+    - name: Install yq
+      run: |
+        sudo wget https://github.com/mikefarah/yq/releases/download/v4.6.1/yq_linux_amd64 -O /usr/bin/yq
+        sudo chmod +x /usr/bin/yq
+
+    - name: Update kustomization.yaml with new image tag
+      run: |
+        yq e '.images[] |= select(.name == "fastapi-app").newTag = "${{ github.sha::7 }}"' -i k8s/prod/kustomization.yaml
+
+    - name: Commit and push changes
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+        git add k8s/prod/kustomization.yaml
+        git commit -m 'Update FastAPI image tag in kustomization.yaml'
+        git push

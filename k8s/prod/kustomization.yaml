@@ -3,20 +3,20 @@ kind: Kustomization
 
 # Define resources (your deployment and service YAML files)
 resources:
-  - fastapi-deploy.yaml
-  - fastapi-svc.yaml
-  - streamlit-deploy.yaml
-  - streamlit-svc.yaml
+  - ../base/fastapi-deploy.yaml
+  - ../base/fastapi-svc.yaml
+  - ../base/streamlit-deploy.yaml
+  - ../base/streamlit-svc.yaml
 
 # Add common labels to all resources
 commonLabels:
   app: obspredict
 
 # Define namespace if needed (optional)
-namespace: devint  # Change this if required
+namespace: prod  # Change this if required
 
 # Configure name prefixes (optional)
-namePrefix: devint-
+namePrefix: prod-
 
 # Add any custom patches if needed (optional)
 patchesStrategicMerge: []
@@ -27,5 +27,5 @@ images:
     newName: ghcr.io/mlopsprojects/e2e-mlops-project/fastapi-app
     newTag: latest
   - name: streamlit-app
-    newName: docker pull ghcr.io/mlopsprojects/e2e-mlops-project/streamlit-app
+    newName: ghcr.io/mlopsprojects/e2e-mlops-project/streamlit-app
     newTag: latest
