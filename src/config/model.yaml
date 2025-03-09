@@ -10,9 +10,12 @@
 # RUN_ID: 6610f9b013d94659b1d3df4923e3b67b
 # VERSION: 'V0'
 
-FEATURES: ["Gender_x0_Male", "family_history_with_overweight_x0_yes"]
-MODEL_NAME: 'lightgbm'
-MODEL_FLAVOR: 'lightgbm'
-RUN_ID: 'd524016eae7b45bebcbe745b1edaad96'
-EXPERIMENT_ID: '666506561086108314'
-VERSION: 'V0'
+#FEATURES: ['Gender_x0_Male', 'Age_x0_q2', 'Age_x0_q3', 'Age_x0_q4', 'family_history_with_overweight_x0_yes', 'FAVC_x0_yes', 'CAEC_x0_Frequently', 'CAEC_x0_Sometimes', 'CAEC_x0_no', 'SMOKE_x0_yes', 'SCC_x0_yes', 'CALC_x0_Sometimes', 'CALC_x0_no', 'MTRANS_x0_Bike', 'MTRANS_x0_Motorbike', 'MTRANS_x0_Public_Transportation', 'MTRANS_x0_Walking', 'SWC_x0_1', 'IS_x0_1', 'HH_x0_good', 'HH_x0_ok', 'INMM_x0_1', 'EVEMM_x0_1', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE', 'BMI', 'PAL', 'BSA', 'IBW', 'diff_W_IBW', 'BMR', 'TDEE']
+#FEATURES: ["Age", "CAEC", "CALC", "CH2O", "FAF", "FCVC","FAVC", "Gender", "Height","MTRANS", "NCP", "SCC", "TUE", "Weight",  "family_history_with_overweight"]
+#['SMOKE_x0_yes', 'SWC_x0_1', 'IS_x0_1', 'HH_x0_good', 'HH_x0_ok', 'INMM_x0_1', 'diff_W_IBW', 'BMR', 'TDEE']
+FEATURES: ['Gender_x0_Male', 'Age_x0_q2', 'Age_x0_q3', 'Age_x0_q4', 'family_history_with_overweight_x0_yes', 'FAVC_x0_yes', 'CAEC_x0_Frequently', 'CAEC_x0_Sometimes', 'CAEC_x0_no', 'SCC_x0_yes', 'CALC_x0_Sometimes', 'CALC_x0_no', 'MTRANS_x0_Bike', 'MTRANS_x0_Motorbike', 'MTRANS_x0_Public_Transportation', 'MTRANS_x0_Walking', 'EVEMM_x0_1', 'Height', 'Weight', 'FCVC', 'NCP', 'CH2O', 'FAF', 'TUE', 'BMI', 'PAL', 'BSA', 'IBW']
+MODEL_NAME: 'decision_tree_model'
+MODEL_FLAVOR: 'decision_tree_model'
+RUN_ID: 'd5a4d49408484b229fb971915ae67ec5'
+EXPERIMENT_ID: '417838299513947800'
+VERSION: 'V2'

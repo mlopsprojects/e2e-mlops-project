@@ -3,6 +3,9 @@ Stores a model serve class that will be used to make predictions with
 the trained model.
 """
 
+import os
+
+import joblib
 import mlflow
 import numpy as np
 from loguru import logger
@@ -16,10 +19,10 @@ label_encoder = load_feature(
     path=general_settings.ARTIFACTS_PATH, feature_name="label_ohe"
 )
 
-if aws_credentials.EC2 != "YOUR_EC2_INSTANCE_URL":
-    mlflow.set_tracking_uri(f"http://{aws_credentials.EC2}:5000")
-else:
-    mlflow.set_tracking_uri("http://mlflow:5000")
+# if aws_credentials.EC2 != "YOUR_EC2_INSTANCE_URL":
+#     mlflow.set_tracking_uri(f"http://{aws_credentials.EC2}:5000")
+# else:
+#     mlflow.set_tracking_uri("http://mlflow:5000")
 
 
 class ModelServe:
@@ -51,14 +54,17 @@ class ModelServe:
             NotImplementedError: raises NotImplementedError if the model's
                 flavor value is not 'lightbm'.
         """
-        logger.info(
-            f"Loading the model {model_settings.MODEL_NAME} from run ID {model_settings.RUN_ID}."
-        )
+        # logger.info(
+        #     f"Loading the model {model_settings.MODEL_NAME} from run ID {model_settings.RUN_ID}."
+        # )
 
         # if self.model_flavor == "lightgbm":
         # model_uri = f"runs:/{model_settings.RUN_ID}/{model_settings.MODEL_NAME}"
-        model_uri = "models:/experimentation-best-model/None"
-        self.model = mlflow.pyfunc.load_model(model_uri)
+        # # model_uri = "models:/experimentation-best-model/None"
+        # self.model = mlflow.pyfunc.load_model(model_uri)
+        self.model = joblib.load(
+            os.path.join(general_settings.ARTIFACTS_PATH, "obesity-pred-model.pkl")
+        )
         # else:
         #     logger.critical(
         #         f"Couldn't load the model using the flavor {model_settings.MODEL_FLAVOR}."
@@ -68,22 +74,22 @@ class ModelServe:
     def predict(
         self, features: np.ndarray, transform_to_str: bool = True
     ) -> np.ndarray:
-        """Uses the trained model to make a prediction on a given feature array.
-
-        Args:
-            features (np.ndarray): the features array.
-            transform_to_str (bool): whether to transform the prediction integer to
-                string or not. Defaults to True.
-
-        Returns:
-            np.ndarray: the predictions array.
-        """
+        """Uses the trained model to make a prediction on a given feature array."""
         prediction = self.model.predict(features)
 
         if transform_to_str:
-            one_hot = np.zeros((prediction.size, prediction.max() + 1))
-            one_hot[np.arange(prediction.size), prediction] = 1
-            prediction = label_encoder.inverse_transform(one_hot)
+            # For decision tree models that return class indices directly
+            if isinstance(prediction, np.ndarray) and prediction.dtype in [
+                np.int32,
+                np.int64,
+            ]:
+                prediction = label_encoder.inverse_transform(prediction)
+            else:
+                # Convert one-hot or probability predictions to class indices
+                n_classes = len(label_encoder.classes_)
+                one_hot = np.zeros((len(prediction), n_classes))
+                one_hot[np.arange(len(prediction)), prediction.astype(int)] = 1
+                prediction = label_encoder.inverse_transform(one_hot)
 
         logger.info(f"Prediction: {prediction}.")
         return prediction

@@ -34,8 +34,8 @@ CONFIG_PATH = os.path.join("/workspace", "src", "config")
 general_settings = read_yaml_file(path=CONFIG_PATH, file="settings.yaml")
 
 
-mlflow.set_tracking_uri(f"http://mlflow:5000")
-print(f"Tracking Server URI: '{mlflow.get_tracking_uri()}'")
+# mlflow.set_tracking_uri(f"http://mlflow:5000")
+# print(f"Tracking Server URI: '{mlflow.get_tracking_uri()}'")
 
 SEED = 42
 ARTIFACTS_OUTPUT_PATH = general_settings["ARTIFACTS_PATH"]
@@ -63,53 +63,58 @@ ohe = joblib.load(os.path.join(ARTIFACTS_OUTPUT_PATH, "features_ohe.pkl"))
 ohe_label = joblib.load(os.path.join(ARTIFACTS_OUTPUT_PATH, "label_ohe.pkl"))
 
 # loading feature columns
-temp_df = pd.read_csv(PROCESSED_RAW_FILE_PATH, sep=",")
-FEATURES_NAME = temp_df.columns.tolist()
-del temp_df
+# temp_df = pd.read_csv(PROCESSED_RAW_FILE_PATH, sep=",")
+# FEATURES_NAME = temp_df.columns.tolist()
+# print(FEATURES_NAME)
+# TODO its hardcoded for now, but read from config file or mlflow params
+# FEATURES_NAME = [
+#     "Gender_x0_Male",
+#     "Age_x0_q2",
+#     "Age_x0_q3",
+#     "family_history_with_overweight_x0_yes",
+#     "CAEC_x0_Sometimes",
+# ]
+# del temp_df
 
-X_train = X_train[:1000, :10]
-y_train = y_train[:1000]
-X_valid = X_valid[:200, :10]
-y_valid = y_valid[:200]
+# X_train = X_train[:1000,]
+# y_train = y_train[:1000]
+# X_valid = X_valid[:200,]
+# y_valid = y_valid[:200]
 
-# Check if the experiment name already exists
-experiment_names = [exp.name for exp in mlflow.search_experiments()]
-experiment = mlflow.get_experiment_by_name(TRAINING_EXPERIMENT_NAME)
-if experiment is not None:
-    experiment_id = experiment.experiment_id
-else:
-    experiment_id = mlflow.create_experiment(TRAINING_EXPERIMENT_NAME)
+# # Check if the experiment name already exists
+# experiment_names = [exp.name for exp in mlflow.search_experiments()]
+# experiment = mlflow.get_experiment_by_name(TRAINING_EXPERIMENT_NAME)
+# if experiment is not None:
+#     experiment_id = experiment.experiment_id
+# else:
+#     experiment_id = mlflow.create_experiment(TRAINING_EXPERIMENT_NAME)
 
 # Train DecisionTree classifier model using X_train, y_train with all features and evaluate it using X_valid, y_valid
-with mlflow.start_run(experiment_id=experiment_id):
-    params = {
-        "criterion": "gini",
-        "splitter": "best",
-        "max_depth": None,
-        "min_samples_split": 2,
-        "min_samples_leaf": 1,
-        "min_weight_fraction_leaf": 0.0,
-        "max_features": None,
-        "random_state": SEED,
-        "max_leaf_nodes": None,
-        "min_impurity_decrease": 0.0,
-        "class_weight": None,
-    }
-    mlflow.log_params(params)
-    model = DecisionTreeClassifier(**params)
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_valid)
-    f1 = f1_score(y_valid, y_pred, average="weighted")
-    print(f"DecisionTreeClassifier f1_score: {f1}")
-    signature = infer_signature(X_train, y_pred)
-    mlflow.sklearn.log_model(model, "decision_tree_model", signature=signature)
-    mlflow.log_metric("f1_score", f1)
-    mlflow.register_model(
-        model_uri=f"runs:/{mlflow.active_run().info.run_id}/decision_tree_model",
-        name="obesity-pred-model",
-    )
-    # mlflow.register_model(
-    #         model_uri=f"runs:/{best_result['run_id']}/{best_result['run_name']}",
-    #         name=f"{FEATURE_SELECTION_EXPERIMENT_NAME}_{run_name}",
-    #         tags=tags,
-    #     )
+# with mlflow.start_run(experiment_id=experiment_id):
+params = {
+    "criterion": "gini",
+    "splitter": "best",
+    "max_depth": None,
+    "min_samples_split": 2,
+    "min_samples_leaf": 1,
+    "min_weight_fraction_leaf": 0.0,
+    "max_features": None,
+    "random_state": SEED,
+    "max_leaf_nodes": None,
+    "min_impurity_decrease": 0.0,
+    "class_weight": None,
+}
+# mlflow.log_params(params)
+model = DecisionTreeClassifier(**params)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_valid)
+f1 = f1_score(y_valid, y_pred, average="weighted")
+print(f"DecisionTreeClassifier f1_score: {f1}")
+joblib.dump(model, os.path.join(ARTIFACTS_OUTPUT_PATH, "obesity-pred-model.pkl"))
+# signature = infer_signature(X_train, y_pred)
+# mlflow.sklearn.log_model(model, "decision_tree_model", signature=signature)
+# mlflow.log_metric("f1_score", f1)
+# mlflow.register_model(
+#     model_uri=f"runs:/{mlflow.active_run().info.run_id}/decision_tree_model",
+#     name="obesity-pred-model",
+# )

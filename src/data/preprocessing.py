@@ -8,6 +8,18 @@ from loguru import logger
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelBinarizer, OneHotEncoder, StandardScaler
 
+drop_features = [
+    "SMOKE_x0_yes",
+    "SWC_x0_1",
+    "IS_x0_1",
+    "HH_x0_good",
+    "HH_x0_ok",
+    "INMM_x0_1",
+    "diff_W_IBW",
+    "BMR",
+    "TDEE",
+]
+
 
 def read_yaml_file(path, file):
     # reading credentials files
@@ -255,7 +267,8 @@ new_train_df = pd.concat(
 new_valid_df = pd.concat(
     [new_valid_df, X_valid.drop(columns=categorical_columns)], axis=1
 )
-
+new_train_df = new_train_df.drop(columns=drop_features)
+new_valid_df = new_valid_df.drop(columns=drop_features)
 X_train = new_train_df.values.copy()
 X_valid = new_valid_df.values.copy()
 
