@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi
+  template:
+    metadata:
+      labels:
+        app: fastapi
+    spec:
+      containers:
+      - name: fastapi
+        image: ghcr.io/YOURGITHUBORG/fastapi-app:latest  # Update with your image
+        ports:
+        - containerPort: 8000
+        env:
+        - name: PORT
+          value: "8000"

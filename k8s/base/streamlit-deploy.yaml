@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streamlit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: streamlit
+  template:
+    metadata:
+      labels:
+        app: streamlit
+    spec:
+      containers:
+      - name: streamlit
+        image: ghcr.io/YOURGITHUBORG/streamlit-app:latest  # Update with your image
+        ports:
+        - containerPort: 8501
+        env:
+        - name: FASTAPI_URL
+          value: "http://fastapi:8000"  # Internal FastAPI service

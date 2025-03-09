@@ -3,10 +3,10 @@ name: CI
 on:
   push:
     branches:
-      - '**'  # Triggers for pushes to any branch
+      - 'none'  # Disabled: Triggers for pushes to no branch
   pull_request:
     branches:
-      - master  # Triggers for pull requests targeting the master branch
+      - none  # Disabled :Triggers for pull requests targeting the none branch. 
     types:
       - opened
       - synchronize
