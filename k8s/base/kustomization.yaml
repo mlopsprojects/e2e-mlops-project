@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Define resources (your deployment and service YAML files)
+resources:
+  - fastapi-deploy.yaml
+  - fastapi-svc.yaml
+  - streamlit-deploy.yaml
+  - streamlit-svc.yaml
+  - namespace.yaml
+
+# Add common labels to all resources
+commonLabels:
+  app: obpredict
+
+# Define namespace if needed (optional)
+namespace: prod  # Change this if required
+
+# Configure name prefixes (optional)
+namePrefix: prod-
+
+# Add any custom patches if needed (optional)
+patchesStrategicMerge: []
