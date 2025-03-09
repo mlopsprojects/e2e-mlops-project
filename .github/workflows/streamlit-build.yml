@@ -3,7 +3,7 @@ name: Build and Publish Streamlit App
 on:
   push:
     paths:
-      - 'streamlit_app/**'
+      - 'src/streamlit_app/**'
 
 jobs:
   build:
@@ -26,6 +26,6 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
-        context: ./streamlit_app
+        context: ./src/streamlit_app
         push: true
         tags: ghcr.io/${{ github.repository }}/streamlit-app:latest

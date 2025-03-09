@@ -50,11 +50,11 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: model-artifact
-        path: fastapi_app
+        path: src/fastapi_app
 
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
-        context: ./fastapi_app
+        context: ./src/fastapi_app
         push: true
         tags: ghcr.io/${{ github.repository }}/fastapi-app:latest
