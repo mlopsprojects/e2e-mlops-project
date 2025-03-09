@@ -29,7 +29,7 @@ jobs:
       with:
         context: ./streamlit_app
         push: true
-        tags: ghcr.io/${{ github.repository }}/streamlit-app:${{ github.sha::7 }}
+        tags: ghcr.io/${{ github.repository }}/streamlit-app:${{ github.sha::0:7 }}
 
     - name: Install yq
       run: |
@@ -38,7 +38,8 @@ jobs:
 
     - name: Update kustomization.yaml with new image tag
       run: |
-        yq e '.images[] |= select(.name == "streamlit-app").newTag = "${{ github.sha::7 }}"' -i k8s/prod/kustomization.yaml
+        SHORT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
+        yq e '.images[] |= select(.name == "streamlit-app").newTag = env(SHORT_SHA)' -i k8s/prod/kustomization.yaml
 
     - name: Commit and push changes
       run: |

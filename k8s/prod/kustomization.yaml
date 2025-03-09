@@ -7,10 +7,11 @@ resources:
   - ../base/fastapi-svc.yaml
   - ../base/streamlit-deploy.yaml
   - ../base/streamlit-svc.yaml
+  - ../base/namespace.yaml
 
 # Add common labels to all resources
 commonLabels:
-  app: obspredict
+  app: obpredict
 
 # Define namespace if needed (optional)
 namespace: prod  # Change this if required
