@@ -1,3 +1,15 @@
+# EXPERIMENT_ID: '531449760186074332'
+# FEATURES:
+# - Gender_x0_Male
+# - Age_x0_q2
+# - Age_x0_q3
+# - family_history_with_overweight_x0_yes
+# - CAEC_x0_Sometimes
+# MODEL_FLAVOR: decision_tree
+# MODEL_NAME: decision_tree
+# RUN_ID: 6610f9b013d94659b1d3df4923e3b67b
+# VERSION: 'V0'
+
 FEATURES: ["Gender_x0_Male", "family_history_with_overweight_x0_yes"]
 MODEL_NAME: 'lightgbm'
 MODEL_FLAVOR: 'lightgbm'

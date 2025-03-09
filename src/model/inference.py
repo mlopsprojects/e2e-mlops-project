@@ -2,6 +2,7 @@
 Stores a model serve class that will be used to make predictions with
 the trained model.
 """
+
 import mlflow
 import numpy as np
 from loguru import logger
@@ -54,14 +55,15 @@ class ModelServe:
             f"Loading the model {model_settings.MODEL_NAME} from run ID {model_settings.RUN_ID}."
         )
 
-        if self.model_flavor == "lightgbm":
-            model_uri = f"runs:/{model_settings.RUN_ID}/{model_settings.MODEL_NAME}"
-            self.model = mlflow.lightgbm.load_model(model_uri)
-        else:
-            logger.critical(
-                f"Couldn't load the model using the flavor {model_settings.MODEL_FLAVOR}."
-            )
-            raise NotImplementedError()
+        # if self.model_flavor == "lightgbm":
+        # model_uri = f"runs:/{model_settings.RUN_ID}/{model_settings.MODEL_NAME}"
+        model_uri = "models:/experimentation-best-model/None"
+        self.model = mlflow.pyfunc.load_model(model_uri)
+        # else:
+        #     logger.critical(
+        #         f"Couldn't load the model using the flavor {model_settings.MODEL_FLAVOR}."
+        #     )
+        #     raise NotImplementedError()
 
     def predict(
         self, features: np.ndarray, transform_to_str: bool = True

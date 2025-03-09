@@ -1,14 +1,22 @@
 """
 API's main file.
 """
+
 from pathlib import Path
 from typing import Dict
 
 import pandas as pd
-from fastapi import FastAPI, Depends
+from fastapi import Depends, FastAPI
 from fastapi.responses import FileResponse
 from loguru import logger
 
+from ..config.model import model_settings
+from ..config.reports import report_settings
+from ..config.settings import general_settings
+from ..data.processing import data_processing_inference
+from ..schema.monitoring import Monitoring
+from ..schema.person import Person
+from . import current_dataset, loaded_model, reference_data
 from .utils import (
     build_data_drift_report,
     build_data_quality_report,
@@ -16,13 +24,6 @@ from .utils import (
     build_target_drift_report,
     get_column_mapping,
 )
-from ..data.processing import data_processing_inference
-from ..config.model import model_settings
-from ..config.reports import report_settings
-from ..config.settings import general_settings
-from ..schema.person import Person
-from ..schema.monitoring import Monitoring
-from . import current_dataset, loaded_model, reference_data
 
 app = FastAPI()
 

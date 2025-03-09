@@ -300,6 +300,7 @@ for run_group_name in run_group_names:
     trials_df = run_mlflow_experiment(
         run_group_name, hpt_experiment_id, direction="maximize"
     )
+    trials_df["run_group_name"] = run_group_name
     all_trials_dfs.append(trials_df)
 
 df_trials = pd.concat(all_trials_dfs, axis=0)
@@ -310,3 +311,23 @@ results = mlflow.register_model(
     model_uri=f"runs:/{best_trial['user_attrs_run_id']}/{best_trial['user_attrs_run_name']}",
     name=f"experimentation-best-model",
 )
+
+print(results)
+
+df_trials.to_csv(
+    os.path.join(ARTIFACTS_OUTPUT_PATH, "hyperparameters_tuning_results.csv")
+)
+# Update config/model.yaml with best_trial['user_attrs_run_id'] and hpt_experiment_id
+model_config_path = os.path.join(CONFIG_PATH, "model.yaml")
+with open(model_config_path, "r") as file:
+    model_config = yaml.safe_load(file)
+
+model_config["RUN_ID"] = best_trial["user_attrs_run_id"]
+model_config["EXPERIMENT_ID"] = hpt_experiment_id
+model_config["MODEL_NAME"] = best_trial["run_group_name"]
+model_config["MODEL_FLAVOR"] = best_trial["run_group_name"]
+model_config["VERSION"] = results.version
+
+
+with open(model_config_path, "w") as file:
+    yaml.safe_dump(model_config, file)
