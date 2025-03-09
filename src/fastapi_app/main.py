@@ -4,7 +4,7 @@ app = FastAPI()
 
 @app.get("/")
 def home():
-    return {"message": "Hello from FastAPI v1.0.2 !"}
+    return {"message": "Hello from FastAPI v1.0.3 !"}
 
 @app.get("/data")
 def get_data():

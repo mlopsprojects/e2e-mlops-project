@@ -3,7 +3,7 @@ name: Build and Publish FastAPI App
 on:
   push:
     paths:
-      - 'fastapi_app/**'
+      - 'src/fastapi_app/**'
 
 jobs:
   build:
